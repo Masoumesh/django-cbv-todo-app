@@ -5,6 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Task
 from django.shortcuts import redirect, get_object_or_404
 
+from rest_framework import viewsets, permissions
+from .serializers import TaskSerializer
+
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -43,3 +46,19 @@ class TaskDoneView(LoginRequiredMixin, View):
         task.is_done = True
         task.save()
         return redirect('task-list')
+    
+        
+
+class TaskViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows tasks to be viewed, created, updated, and deleted.
+    """
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Only logged-in users can access
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)  # Show only user's tasks
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)  # Assign task to the logged-in user
