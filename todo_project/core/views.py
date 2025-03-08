@@ -8,14 +8,17 @@ from django.shortcuts import redirect, get_object_or_404
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
-    template_name = 'tasks/task_list.html'
-    context_object_name = 'core'
+    template_name = 'core/task_list.html'
+    context_object_name = 'tasks'
+
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user)
+        return Task.objects.filter(user=self.request.user) 
+
+
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     fields = ['title', 'description']
-    template_name = 'tasks/task_form.html'
+    template_name = 'core/task_form.html'
     success_url = reverse_lazy('task-list')
 
     def form_valid(self, form):
@@ -25,12 +28,12 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     fields = ['title', 'description', 'is_done']
-    template_name = 'tasks/task_form.html'
+    template_name = 'core/task_form.html'
     success_url = reverse_lazy('task-list')
 
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
-    template_name = 'tasks/task_confirm_delete.html'
+    template_name = 'core/task_confirm_delete.html'
     success_url = reverse_lazy('task-list')
 
 
