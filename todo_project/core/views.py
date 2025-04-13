@@ -62,7 +62,11 @@ class TaskViewSet(viewsets.ModelViewSet):
     ]  # Only logged-in users can access
 
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user)  # Show only user's tasks
+        return Task.objects.filter(
+            user=self.request.user
+        )  # Show only user's tasks
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)  # Assign task to the logged-in user
+        serializer.save(
+            user=self.request.user
+        )  # Assign task to the logged-in user

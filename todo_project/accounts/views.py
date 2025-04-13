@@ -1,7 +1,7 @@
-from django.shortcuts import render
+# from django.shortcuts import render
 
 # Create your views here.
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from rest_framework import status, permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
