@@ -4,25 +4,273 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .todo-item:hover .delete-btn {
+            opacity: 1;
+        }
+        
+        .completed {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #8b5cf6;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Button Styles */
+        .btn-primary {
+            @apply inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-200 shadow-md hover:shadow-lg;
+        }
+        
+        .btn-secondary {
+            @apply inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition duration-200 shadow-sm hover:shadow-md;
+        }
+        
+        .btn-danger {
+            @apply inline-flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition duration-200 shadow-md hover:shadow-lg;
+        }
+        
+        .btn-success {
+            @apply inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-200 shadow-md hover:shadow-lg;
+        }
+        
+        .btn-warning {
+            @apply inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition duration-200 shadow-md hover:shadow-lg;
+        }
+        
+        .btn-info {
+            @apply inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-200 shadow-md hover:shadow-lg;
+        }
+        
+        .btn-outline {
+            @apply inline-flex items-center px-4 py-2 border border-purple-500 text-purple-500 hover:bg-purple-50 rounded-lg transition duration-200;
+        }
+        
+        /* Action Buttons */
+        .btn-done {
+            @apply inline-flex items-center px-3 py-1.5 bg-green-100 hover:bg-green-200 text-green-800 rounded-md text-sm font-medium transition duration-200;
+        }
+        
+        .btn-not-done {
+            @apply inline-flex items-center px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-800 rounded-md text-sm font-medium transition duration-200;
+        }
+        
+        .btn-edit {
+            @apply inline-flex items-center px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-md text-sm font-medium transition duration-200;
+        }
+        
+        .btn-delete {
+            @apply inline-flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md text-sm font-medium transition duration-200;
+        }
+        
+        /* Form Input Styles */
+        .form-input {
+            @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200;
+        }
+        
+        .form-label {
+            @apply block text-gray-700 font-medium mb-2;
+        }
+        
+        /* Card Styles */
+        .card {
+            @apply bg-white rounded-xl shadow-sm overflow-hidden;
+        }
+        
+        /* Ripple Effect */
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 600ms linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
-<body>
 
-    <nav>
-        <a href="{% url 'task-list' %}">Home</a>
-        {% if user.is_authenticated %}
-            <a href="{% url 'task-create' %}">New Task</a>
-            <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-            <a href="{% url 'login' %}">Login</a>
-        {% endif %}
-    </nav>
+<body class="bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
+    <div class="container mx-auto px-4 py-6">
+        <!-- Navigation -->
+        <nav class="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm mb-8">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-check-circle text-purple-600 text-xl"></i>
+                <span class="text-xl font-semibold text-gray-800">Todo App</span>
+            </div>
 
-    <hr>
+            <div class="flex space-x-6">
+                <a href="{% url 'task-list' %}" class="nav-link text-gray-600 hover:text-purple-600 transition duration-200">
+                    <i class="fas fa-home mr-1"></i> Home
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'task-create' %}" class="nav-link text-gray-600 hover:text-purple-600 transition duration-200">
+                        <i class="fas fa-plus-circle mr-1"></i> New Task
+                    </a>
+                    <!--<a href="{% url 'logout' %}" class="nav-link text-gray-600 hover:text-purple-600 transition duration-200">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                        
+                    </a>-->
+                    <a href="#" class="nav-link text-gray-600 hover:text-purple-600 transition duration-200" id="logout-link">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                    </a>
+                    
+                    <!-- Logout Form (initially hidden) -->
+                    <form method="POST" action="{% url 'logout' %}" id="logout-form" style="display: none;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                    
+                    <script>
+                        document.getElementById('logout-link').addEventListener('click', function(event) {
+                            event.preventDefault(); // Prevent default anchor behavior
+                            document.getElementById('logout-form').submit(); // Submit the form
+                        });
+                    </script>
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-link text-gray-600 hover:text-purple-600 transition duration-200">
+                        <i class="fas fa-sign-in-alt mr-1"></i> Login
+                    </a>
+                {% endif %}
+            </div>
+        </nav>
 
-    {% block content %}{% endblock %}
+        <hr class="border-gray-200 my-4">
 
+        <!-- Main Content -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Example Todo Item with Action Buttons -->
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Task Actions</h2>
+                
+                <div class="space-y-4">
+
+                    
+                    <!-- Completed Task Example -->
+                    {% block content %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-lg font-medium text-gray-500 {% if task.completed %}line-through{% endif %}">{{ task.name }}</span>
+                                <span class="px-2 py-1 {{ task.category_color }} text-xs rounded-full">{{ task.category }}</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="btn-done" {% if task.completed %}disabled{% endif %}>
+                                    <i class="fas fa-check-circle mr-1"></i> Done
+                                </button>
+                                <button class="btn-not-done" {% if not task.completed %}disabled{% endif %}>
+                                    <i class="fas fa-times-circle mr-1"></i> Not Done
+                                </button>
+                                <button class="btn-edit">
+                                    <i class="fas fa-edit mr-1"></i> Edit
+                                </button>
+                                <button class="btn-delete">
+                                    <i class="fas fa-trash-alt mr-1"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    {% endblock %}
+
+                
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add active class to current page link
+            const currentUrl = window.location.pathname;
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentUrl) {
+                    link.classList.add('text-purple-600');
+                    link.classList.add('font-medium');
+                }
+            });
+
+            // Add ripple effect to all buttons
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    // Don't add ripple to disabled buttons
+                    if (button.disabled) return;
+
+                    const rect = button.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple-effect';
+                    ripple.style.left = `${x}px`;
+                    ripple.style.top = `${y}px`;
+
+                    button.appendChild(ripple);
+
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+
+            // Example functionality for task buttons
+            const taskItems = document.querySelectorAll('.flex.items-center.justify-between.p-4.bg-gray-50.rounded-lg');
+            taskItems.forEach(item => {
+                const doneBtn = item.querySelector('.btn-done');
+                const notDoneBtn = item.querySelector('.btn-not-done');
+                const textElement = item.querySelector('.text-lg');
+
+                if (doneBtn && !doneBtn.disabled) {
+                    doneBtn.addEventListener('click', function () {
+                        textElement.classList.add('line-through', 'text-gray-500');
+                        doneBtn.disabled = true;
+                        notDoneBtn.disabled = false;
+                    });
+                }
+
+                if (notDoneBtn && !notDoneBtn.disabled) {
+                    notDoneBtn.addEventListener('click', function () {
+                        textElement.classList.remove('line-through', 'text-gray-500');
+                        notDoneBtn.disabled = true;
+                        doneBtn.disabled = false;
+                    });
+                }
+            });
+        });
+    </script>
 </body>
-</html>
-
-
 

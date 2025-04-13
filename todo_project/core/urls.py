@@ -8,7 +8,7 @@ from .views import TaskViewSet
 
 
 router = DefaultRouter()
-router.register(r'api/tasks', TaskViewSet)
+router.register(r'api/tasks', TaskViewSet, basename='task')
 
 
 urlpatterns = [

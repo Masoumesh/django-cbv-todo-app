@@ -38,14 +38,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'accounts',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'drf_yasg',
 
 ]
-
+AUTH_USER_MODEL = 'accounts.CustomUser'
 REST_FRAMEWORK = {
 "DEFAULT_PERMISSION_CLASSES": [
-"rest_framework.permissions.AllowAny",
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+    'rest_framework.authentication.TokenAuthentication', 
 ],
 }
 
@@ -131,3 +135,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # This should be enabled for sessions
+
+
+LOGOUT_REDIRECT_URL = 'login'
+LOGIN_REDIRECT_URL = '/task-list/'
+
+
