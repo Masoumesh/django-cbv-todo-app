@@ -8,9 +8,10 @@ from rest_framework.response import Response
 from rest_framework.generics import RetrieveUpdateAPIView
 from .serializers import UserRegistrationSerializer, CustomUserSerializer
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 def register_user(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()  # Create the user
