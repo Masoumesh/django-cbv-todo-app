@@ -142,4 +142,4 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # This should be enabled
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_REDIRECT_URL = '/task-list/'
 
-
+LOGIN_URL = '/login/'
