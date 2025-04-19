@@ -26,7 +26,8 @@ SECRET_KEY = config("SECRET_KEY",default="test")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool,default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default="*", cast=lambda v: [s.strip() for s in v.split(',')])
+
 
 
 # Application definition
@@ -143,3 +144,6 @@ LOGOUT_REDIRECT_URL = "login"
 LOGIN_REDIRECT_URL = "/task-list/"
 
 LOGIN_URL = "/login/"
+
+# celery configs
+CELERY_BROKER_URL = "redis://redis:6379/1"
