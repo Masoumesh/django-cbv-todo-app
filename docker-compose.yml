@@ -1,6 +1,7 @@
 # version: "3.9"
 
 services:
+
   redis:
     container_name: redis
     image: redis
@@ -8,12 +9,14 @@ services:
     ports:
     - "6379:6379"
     command: redis-server --save 60 1 --loglevel warning
+    networks:
+      - app-network
 
 
   backend:
     build: .
     container_name: backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn todo_project.wsgi:application --bind 0.0.0.0:8000
     volumes:
     - ./todo_project:/app
     ports:
@@ -24,9 +27,34 @@ services:
     depends_on:
     - redis
   
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - static_volume:/app/static
+      - media_volume:/app/media
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+
   worker:
     build: .
     command: celery -A todo_project worker --loglevel=info
     depends_on:
     - redis
     - backend
+
+  
+  
+volumes:
+  static_volume:
+  media_volume:
+
+
+networks:
+  app-network:
+    driver: bridge
