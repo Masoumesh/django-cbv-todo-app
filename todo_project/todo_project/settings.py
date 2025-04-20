@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "drf_yasg",
+    "django_celery_beat",
+
 ]
 AUTH_USER_MODEL = "accounts.CustomUser"
 REST_FRAMEWORK = {
@@ -147,3 +149,11 @@ LOGIN_URL = "/login/"
 
 # celery configs
 CELERY_BROKER_URL = "redis://redis:6379/1"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+
+#  celery-beat
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+# openweather api
+OPENWEATHER_API_KEY = config("8befc55b836f8e8795fe90f1aedd83ad")

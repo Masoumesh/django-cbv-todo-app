@@ -30,3 +30,24 @@ services:
     depends_on:
     - redis
     - backend
+
+  
+  celery:
+    build: .
+    command: celery -A todo_project worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=todo_project.settings
+
+  celery-beat:
+    build: .
+    command: celery -A todo_project beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=todo_project.settings

@@ -24,4 +24,5 @@ urlpatterns = [
     path("<int:pk>/delete/", TaskDeleteView.as_view(), name="task-delete"),
     path("<int:pk>/done/", TaskDoneView.as_view(), name="task-done"),
     path("", include(router.urls)),
+    path("weather/", WeatherView.as_view(), name="weather"),
 ]

@@ -4,10 +4,12 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Task
 from django.shortcuts import redirect, get_object_or_404
-
 from rest_framework import viewsets, permissions
 from .serializers import TaskSerializer
 
+from django.core.cache import cache
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -48,6 +50,8 @@ class TaskDoneView(LoginRequiredMixin, View):
         task.is_done = True
         task.save()
         return redirect("task-list")
+    
+    
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -70,3 +74,13 @@ class TaskViewSet(viewsets.ModelViewSet):
         serializer.save(
             user=self.request.user
         )  # Assign task to the logged-in user
+        
+        
+        
+
+class WeatherView(APIView):
+    def get(self, request):
+        data = cache.get("weather_data")
+        if data:
+            return Response(data)
+        return Response({"error": "Weather data not available."}, status=404)
