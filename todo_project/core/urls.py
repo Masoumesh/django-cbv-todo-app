@@ -10,8 +10,7 @@ from .views import (
 
 
 from rest_framework.routers import DefaultRouter
-from .views import TaskViewSet
-
+from .views import TaskViewSet,  WeatherView
 
 router = DefaultRouter()
 router.register(r"api/tasks", TaskViewSet, basename="task")

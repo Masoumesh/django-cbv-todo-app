@@ -10,6 +10,9 @@ from .serializers import TaskSerializer
 from django.core.cache import cache
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -79,6 +82,8 @@ class TaskViewSet(viewsets.ModelViewSet):
         
 
 class WeatherView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
     def get(self, request):
         data = cache.get("weather_data")
         if data:
